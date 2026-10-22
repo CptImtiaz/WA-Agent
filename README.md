@@ -64,6 +64,34 @@ Try: "Assalamualaikum, nak tempah laddoo untuk walimah 500 orang bulan Disember"
    `WHATSAPP_VERIFY_TOKEN`, click **Verify and save**, then **subscribe to `messages`**.
 6. Message your business number from another phone. 🎉
 
+## Linked-device mode (bot + staff on one number, unofficial)
+
+Runs the bot on your existing WhatsApp Business app number as a linked device,
+like WhatsApp Web, so customers who message that number get bot replies and
+staff can still reply from the app. **This is not the official API and is against
+WhatsApp's terms: the number can be banned.** Use it only as a stopgap until
+coexistence through the official API is set up.
+
+It needs a computer that stays on (it keeps a live connection, so it can't run
+on Vercel):
+
+```bash
+npm install
+cp .env.example .env     # only GEMINI_API_KEY is required in this mode
+npm run linked           # scan the QR: WhatsApp Business > Linked devices > Link a device
+```
+
+Or `LINK_WITH_CODE=60123456789 npm run linked` to get a pairing code instead of a QR.
+The login is saved in `auth_linked/`; delete that folder to link again.
+
+- Replies only to people who message first, in private chats (never groups or status).
+- Waits a few seconds and shows "typing…" before replying; at most
+  `MAX_REPLIES_PER_MINUTE` replies per minute (default 15).
+- **When anyone replies from the phone app, the bot goes quiet in that chat** for
+  `HANDOFF_HOURS`.
+- Alerts go to your own "Message yourself" chat (or `ALERT_WHATSAPP_NUMBER`). Send
+  `/pause`, `/resume`, `/reset <number>` in that chat.
+
 ## Owner alerts and commands
 
 New enquiries and handoffs are sent to `OWNER_WHATSAPP_NUMBER` with a `wa.me` link to the customer.
