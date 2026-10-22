@@ -59,7 +59,7 @@ function agentContext(msg: IncomingMessage): AgentContext {
 }
 
 /** Commands the owner can send to the bot number. */
-async function ownerCommand(text: string): Promise<string> {
+export async function ownerCommand(text: string): Promise<string> {
   const [cmd, arg = ""] = text.trim().split(/\s+/, 2);
   const number = arg.replace(/\D/g, "");
   switch (cmd.toLowerCase()) {

@@ -28,6 +28,10 @@ export const config = {
   // the customer to expect a message or call from it. Defaults to the owner number.
   staffContactNumber: optional("STAFF_CONTACT_NUMBER", optional("OWNER_WHATSAPP_NUMBER")).replace(/\D/g, ""),
 
+  // "linked" when running as a linked device on your WhatsApp app number
+  // (scripts/linked-device.ts); staff then reply in the same chat.
+  linkedMode: process.env.BOT_MODE === "linked",
+
   // How long the bot stays quiet after handing a chat to a human.
   handoffHours: Number(optional("HANDOFF_HOURS", "12")),
 
