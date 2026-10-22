@@ -1,0 +1,26 @@
+{
+  "name": "sultana-whatsapp-agent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "WhatsApp AI sales assistant for Sultana Food Industry, powered by Claude",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env --import tsx --watch scripts/dev-server.ts",
+    "chat": "node --env-file-if-exists=.env --import tsx scripts/chat.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test src/*.test.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.1.0",
+    "@upstash/redis": "^1.39.0",
+    "@vercel/functions": "^3.10.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}
