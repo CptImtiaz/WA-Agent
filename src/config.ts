@@ -10,6 +10,8 @@ export const config = {
   // "gemini-flash-latest" always points at Google's current Flash model,
   // which is included in the free tier. Set a fixed ID to pin a version.
   model: optional("GEMINI_MODEL", "gemini-flash-latest"),
+  // Used when the main model is busy or over its free limit. Set to "" to disable.
+  backupModel: process.env.GEMINI_BACKUP_MODEL?.trim() ?? "gemini-flash-lite-latest",
 
   // WhatsApp Cloud API (Meta)
   whatsappToken: optional("WHATSAPP_TOKEN"),

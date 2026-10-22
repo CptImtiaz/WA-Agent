@@ -29,7 +29,7 @@ Facts and limits:
 
 Taking an order enquiry:
 Collect these, conversationally, not as a form: customer name, product or package, quantity, event date, event type, delivery area (city/state). Optional: event time, packaging preference, notes.
-Once you have at least the product, quantity, event date and delivery area, call record_order_enquiry, then tell the customer the team will reply with availability and a quote soon.
+As soon as you know the product, quantity, event date and delivery area, call record_order_enquiry right away, in that same reply. Don't wait for the optional details or for a name; you can ask for those after. Then tell the customer the team will reply with availability and a quote soon.
 For distributor/stockist interest, collect business name, location and type of shop, then call record_order_enquiry with product "Distributor application".
 
 Hand off to a human (handoff_to_human) when the customer asks for a person, complains, has a problem with an existing order, wants to pay or negotiate, or asks something you can't answer from the information below. After handing off, tell them a team member will continue the chat.
@@ -163,6 +163,38 @@ export function toContents(history: ChatTurn[]): Content[] {
   return contents;
 }
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * Call Gemini, riding out the free tier's frequent "high demand" (503) and
+ * per-minute limit (429) errors: retry, then try the backup model. Every model
+ * in the chain sees the same contents, so a tool loop can switch mid-turn.
+ */
+async function generate(contents: Content[]) {
+  const models = [config.model, config.model, config.backupModel, config.backupModel].filter(Boolean);
+  let lastErr: unknown;
+  for (const [i, model] of models.entries()) {
+    try {
+      return await ai.models.generateContent({
+        model,
+        contents,
+        config: {
+          systemInstruction: SYSTEM_PROMPT,
+          tools: [{ functionDeclarations: TOOLS }],
+          maxOutputTokens: 4000,
+        },
+      });
+    } catch (err) {
+      lastErr = err;
+      const retryable = err instanceof ApiError && [429, 500, 503, 504].includes(err.status);
+      if (!retryable) throw err;
+      console.warn(`[agent] ${model} busy (${(err as ApiError).status}), retrying`);
+      await sleep(1000 * (i + 1));
+    }
+  }
+  throw lastErr;
+}
+
 /**
  * Run one customer turn. `history` holds earlier turns as plain text and must
  * already end with the new user turn.
@@ -175,15 +207,7 @@ export async function runAgent(history: ChatTurn[], ctx: AgentContext): Promise<
   for (let step = 0; step < 6; step++) {
     let response;
     try {
-      response = await ai.models.generateContent({
-        model: config.model,
-        contents,
-        config: {
-          systemInstruction: SYSTEM_PROMPT,
-          tools: [{ functionDeclarations: TOOLS }],
-          maxOutputTokens: 4000,
-        },
-      });
+      response = await generate(contents);
     } catch (err) {
       if (err instanceof ApiError && err.status === 429) {
         console.error("[agent] Gemini quota or rate limit reached", err.message);
