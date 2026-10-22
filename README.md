@@ -1,6 +1,6 @@
 # Sultana WhatsApp Agent
 
-An AI sales assistant for **Sultana Food Industry** on WhatsApp, powered by Claude.
+A free AI sales assistant for **Sultana Food Industry** on WhatsApp, powered by Google Gemini (free tier).
 
 It answers customers in Bahasa Melayu or English, explains the laddoo, desserts,
 drinks and wedding packages, collects order details (product, quantity, event
@@ -15,7 +15,7 @@ It never quotes prices or confirms dates; the team does that.
 ```
 Customer on WhatsApp ──► Meta WhatsApp Cloud API ──► /api/webhook (Vercel)
                                                         │
-                                                        ├─ Claude (answers, uses tools)
+                                                        ├─ Gemini (answers, uses tools)
                                                         │    • record_order_enquiry → alert owner
                                                         │    • handoff_to_human     → alert owner, pause bot
                                                         └─ Redis (chat memory, leads, dedupe)
@@ -24,7 +24,7 @@ Customer on WhatsApp ──► Meta WhatsApp Cloud API ──► /api/webhook (V
 | File | What it is |
 |---|---|
 | `src/business.ts` | **What the bot knows**: products, packages, policies. Edit this. |
-| `src/agent.ts` | System prompt (tone, rules), tools, Claude call |
+| `src/agent.ts` | System prompt (tone, rules), tools, Gemini call |
 | `src/handler.ts` | Per-message flow, owner alerts, owner commands |
 | `src/whatsapp.ts` | WhatsApp Cloud API: parse webhook, verify signature, send |
 | `src/store.ts` | Memory: Upstash Redis, or in-memory for local testing |
@@ -33,11 +33,12 @@ Customer on WhatsApp ──► Meta WhatsApp Cloud API ──► /api/webhook (V
 
 ## 1. Try it in the terminal (5 minutes)
 
-Needs Node 20+ and a Claude API key from https://console.anthropic.com.
+Needs Node 20+ and a free Gemini API key: go to https://aistudio.google.com/apikey,
+sign in with a Google account and click **Create API key**. No credit card needed.
 
 ```bash
 npm install
-cp .env.example .env        # put your ANTHROPIC_API_KEY in it
+cp .env.example .env        # put your GEMINI_API_KEY in it
 npm run chat
 ```
 
@@ -83,10 +84,22 @@ Leads are also saved in Redis under the `leads` list.
 
 - Products, packages, policies: `src/business.ts`
 - Tone, rules, when to hand off: `SYSTEM_PROMPT` in `src/agent.ts`
-- Model and effort: `CLAUDE_MODEL`, `CLAUDE_EFFORT` env vars (default `claude-opus-5-5`, `low`)
+- Model: `GEMINI_MODEL` env var (default `gemini-flash-latest`, Google's current free Flash model)
 
-Requests use Claude's server-side refusal fallback (`fallbacks: "default"`), so if a safety
-check declines a message, Claude retries on another model automatically.
+## Free tier limits
+
+Everything here can run at RM0: WhatsApp Cloud API replies to customers who message
+first are free, and Gemini, Vercel and Upstash have free plans. The catch:
+
+- **Gemini free tier has daily request limits**, set per project and shown in
+  Google AI Studio. Each customer message uses 1-3 requests. If the limit is hit, the
+  customer gets a polite "our team will reply shortly" message and **you get an alert
+  with their message**, so no order is lost. Limits reset daily.
+- **On the free tier Google may use the chats to improve its products** (and human
+  reviewers may read them). Don't let the bot ask for sensitive data; it only needs
+  name, date, quantity and area. Turning on billing in AI Studio removes this.
+- Vercel's free Hobby plan is meant for non-commercial use; Cloudflare Workers' free
+  plan allows commercial use if you want to move later.
 
 ## Development
 

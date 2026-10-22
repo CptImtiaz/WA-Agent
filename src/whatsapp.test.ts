@@ -45,3 +45,19 @@ test("trimHistory keeps the newest turns and starts on a user turn", () => {
   assert.deepEqual(trimHistory(turns, 3).map((t) => t.text), ["3", "4"]);
   assert.deepEqual(trimHistory(turns, 10).map((t) => t.text), ["1", "2", "3", "4"]);
 });
+
+test("toContents maps roles and merges back-to-back turns", async () => {
+  process.env.GEMINI_API_KEY ||= "test";
+  const { toContents } = await import("./agent.js");
+  assert.deepEqual(
+    toContents([
+      { role: "user", text: "a" },
+      { role: "user", text: "b" },
+      { role: "assistant", text: "c" },
+    ]),
+    [
+      { role: "user", parts: [{ text: "a" }, { text: "b" }] },
+      { role: "model", parts: [{ text: "c" }] },
+    ],
+  );
+});

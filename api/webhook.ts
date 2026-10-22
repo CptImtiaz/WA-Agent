@@ -2,7 +2,7 @@
 // GET  = Meta's one-time webhook verification
 // POST = incoming WhatsApp messages
 import { waitUntil } from "@vercel/functions";
-import { config, missingWhatsAppConfig } from "../src/config.js";
+import { config, missingConfig } from "../src/config.js";
 import { handleMessage } from "../src/handler.js";
 import { parseWebhook, verifySignature } from "../src/whatsapp.js";
 
@@ -19,7 +19,7 @@ export function GET(request: Request): Response {
 }
 
 export async function POST(request: Request): Promise<Response> {
-  const missing = missingWhatsAppConfig();
+  const missing = missingConfig();
   if (missing.length) {
     console.error(`[webhook] missing env: ${missing.join(", ")}`);
     return new Response("Server not configured", { status: 500 });

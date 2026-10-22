@@ -1,5 +1,5 @@
 // Talk to the assistant in your terminal, no WhatsApp needed: `npm run chat`
-// Needs only ANTHROPIC_API_KEY. Owner alerts are printed instead of sent.
+// Needs only GEMINI_API_KEY. Owner alerts are printed instead of sent.
 import { createInterface } from "node:readline/promises";
 import { formatUserTurn, runAgent } from "../src/agent.js";
 import type { ChatTurn } from "../src/store.js";

@@ -2,7 +2,7 @@
   "name": "sultana-whatsapp-agent",
   "version": "0.1.0",
   "private": true,
-  "description": "WhatsApp AI sales assistant for Sultana Food Industry, powered by Claude",
+  "description": "WhatsApp AI sales assistant for Sultana Food Industry, powered by Google Gemini (free tier)",
   "type": "module",
   "engines": {
     "node": ">=20"
@@ -14,7 +14,7 @@
     "test": "tsx --test src/*.test.ts"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^1.1.0",
+    "@google/genai": "^2.30.0",
     "@upstash/redis": "^1.39.0",
     "@vercel/functions": "^3.10.2"
   },

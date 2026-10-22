@@ -5,9 +5,11 @@ function optional(name: string, fallback = ""): string {
 }
 
 export const config = {
-  // Claude
-  model: optional("CLAUDE_MODEL", "claude-opus-5-5"),
-  effort: optional("CLAUDE_EFFORT", "low") as "low" | "medium" | "high",
+  // Google Gemini (free API key: https://aistudio.google.com/apikey)
+  geminiApiKey: optional("GEMINI_API_KEY"),
+  // "gemini-flash-latest" always points at Google's current Flash model,
+  // which is included in the free tier. Set a fixed ID to pin a version.
+  model: optional("GEMINI_MODEL", "gemini-flash-latest"),
 
   // WhatsApp Cloud API (Meta)
   whatsappToken: optional("WHATSAPP_TOKEN"),
@@ -27,8 +29,9 @@ export const config = {
   historyLimit: Number(optional("HISTORY_LIMIT", "30")),
 };
 
-export function missingWhatsAppConfig(): string[] {
+export function missingConfig(): string[] {
   const required: [string, string][] = [
+    ["GEMINI_API_KEY", config.geminiApiKey],
     ["WHATSAPP_TOKEN", config.whatsappToken],
     ["WHATSAPP_PHONE_NUMBER_ID", config.phoneNumberId],
     ["WHATSAPP_VERIFY_TOKEN", config.verifyToken],

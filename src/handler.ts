@@ -106,7 +106,14 @@ export async function handleMessage(msg: IncomingMessage): Promise<void> {
   markReadWithTyping(msg.id).catch((err) => console.warn("[wa] typing indicator failed", err.message));
 
   const history = [...(await store.getHistory(msg.from)), userTurn];
-  const { reply } = await runAgent(history, agentContext(msg));
+  const { reply, ok } = await runAgent(history, agentContext(msg));
+  if (!ok) {
+    // The AI couldn't answer (e.g. free daily quota used up): make sure a human sees it.
+    await notifyOwner(
+      `⚠️ *Bot couldn't answer* ${msg.name ?? "a customer"} (+${msg.from}). Please reply yourself:\n` +
+        `"${msg.text}"\nChat: ${chatLink(msg.from)}`,
+    ).catch((err) => console.error("[owner alert] failed", err));
+  }
 
   await sendText(msg.from, reply);
   await store.appendHistory(
