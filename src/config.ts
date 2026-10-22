@@ -24,6 +24,10 @@ export const config = {
   // digits only with country code, e.g. 60123456789.
   ownerNumber: optional("OWNER_WHATSAPP_NUMBER").replace(/\D/g, ""),
 
+  // Number your staff use to contact customers after a handoff. The bot tells
+  // the customer to expect a message or call from it. Defaults to the owner number.
+  staffContactNumber: optional("STAFF_CONTACT_NUMBER", optional("OWNER_WHATSAPP_NUMBER")).replace(/\D/g, ""),
+
   // How long the bot stays quiet after handing a chat to a human.
   handoffHours: Number(optional("HANDOFF_HOURS", "12")),
 

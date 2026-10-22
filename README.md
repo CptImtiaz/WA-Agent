@@ -67,6 +67,9 @@ Try: "Assalamualaikum, nak tempah laddoo untuk walimah 500 orang bulan Disember"
 ## Owner alerts and commands
 
 New enquiries and handoffs are sent to `OWNER_WHATSAPP_NUMBER` with a `wa.me` link to the customer.
+When a customer asks for a person, the bot tells them a team member will contact them from
+`STAFF_CONTACT_NUMBER` (defaults to the owner number), pauses itself for that chat, and sends
+you a link to message or call the customer from your own phone.
 
 > **WhatsApp rule:** a business number can only send free-form messages to someone who
 > messaged it in the last 24 hours. Send "hi" to the bot number from the owner phone each

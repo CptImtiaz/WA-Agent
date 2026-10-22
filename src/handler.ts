@@ -51,7 +51,7 @@ function agentContext(msg: IncomingMessage): AgentContext {
       await notifyOwner(
         `🙋 *Customer needs a person*: ${who}\n` +
           `Reason: ${reason}\n${summary}\n` +
-          `Chat: ${chatLink(msg.from)}\n` +
+          `👉 Contact them now: ${chatLink(msg.from)} (or call +${msg.from})\n` +
           `Bot paused ${config.handoffHours}h for this chat. Send "/resume ${msg.from}" to turn it back on.`,
       );
     },
