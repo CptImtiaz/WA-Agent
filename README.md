@@ -99,14 +99,18 @@ The login is saved in `auth_linked/`; delete that folder to link again.
 3. **Variables**:
    - `GEMINI_API_KEY` (and optionally `GEMINI_MODEL`, `HANDOFF_HOURS`, `HISTORY_LIMIT`)
    - `LINKED_AUTH_DIR=/data/auth_linked`
-   - `LINK_WITH_CODE=60123456789` (your WhatsApp number, digits only)
-4. Deploy. `railway.json` runs `npm start` and restarts the bot if it stops.
-5. Open **Deployments → View logs**, find `PAIRING CODE: XXXX-XXXX`, and enter it on your phone:
-   WhatsApp → Linked devices → Link a device → **Link with phone number instead**.
-   Codes expire quickly; if it does, use **Restart** in Railway to get a new one.
+   - `LINK_PAGE_KEY=` any long random text (protects the link page)
+4. **Settings → Networking → Generate Domain** (gives the link page a web address).
+5. Deploy. `railway.json` runs `npm start` and restarts the bot if it stops.
+6. Open `https://<your-railway-domain>/link?key=<LINK_PAGE_KEY>` on a computer and scan the QR
+   with your phone: WhatsApp → Linked devices → Link a device. The page refreshes by itself and
+   says "Connected" when done.
+
+   Alternative: set `LINK_WITH_CODE=60123456789` (your number) to get an 8-letter pairing code
+   in **View logs** instead, then on the phone choose **Link with phone number instead**.
 
 Run the bot in only one place at a time (stop it on your PC first), or customers get two replies.
-If the phone removes the linked device, the bot clears the saved login and prints a new pairing code.
+If the phone removes the linked device, the bot clears the saved login so it can be linked again.
 
 ## Owner alerts and commands
 
