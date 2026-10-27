@@ -42,7 +42,7 @@ const MAX_REPLIES_PER_MINUTE = Number(process.env.MAX_REPLIES_PER_MINUTE || "15"
 // On a host (e.g. Railway) PORT is set: serve the QR code on a web page at
 // /link?key=<LINK_PAGE_KEY>, since a QR in the logs is hard to scan.
 const PORT = process.env.PORT;
-const LINK_PAGE_KEY = process.env.LINK_PAGE_KEY || randomBytes(9).toString("base64url");
+const LINK_PAGE_KEY = process.env.LINK_PAGE_KEY?.trim().replace(/^["']|["']$/g, "") || randomBytes(9).toString("base64url");
 const HOSTED = Boolean(PAIR_NUMBER || PORT);
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -215,7 +215,8 @@ function startLinkPage() {
       res.writeHead(200, { "content-type": "text/plain" }).end("ok"); // health check
       return;
     }
-    if (url.pathname !== "/link" || url.searchParams.get("key") !== LINK_PAGE_KEY) {
+    if (url.pathname !== "/link" || url.searchParams.get("key")?.trim() !== LINK_PAGE_KEY) {
+      if (url.pathname === "/link") console.warn("[linked] link page opened with a wrong key");
       res.writeHead(404).end();
       return;
     }
@@ -236,7 +237,9 @@ function startLinkPage() {
       "x-robots-tag": "noindex",
     }).end(`<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta http-equiv="refresh" content="5"><title>Link WhatsApp</title><body style="font-family:system-ui;text-align:center;padding:24px">${body}</body>`);
   }).listen(Number(PORT), () => {
-    console.log(`[linked] Link page: open https://<your-app-domain>/link?key=${LINK_PAGE_KEY}`);
+    // Railway sets RAILWAY_PUBLIC_DOMAIN once a domain is generated.
+    const domain = process.env.RAILWAY_PUBLIC_DOMAIN || "<your-app-domain>";
+    console.log(`[linked] LINK PAGE: https://${domain}/link?key=${encodeURIComponent(LINK_PAGE_KEY)}`);
   });
 }
 
