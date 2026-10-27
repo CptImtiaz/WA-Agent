@@ -24,6 +24,7 @@ import {
   type WAMessage,
   type WASocket,
 } from "baileys";
+import { rm } from "node:fs/promises";
 import pino from "pino";
 import qrcode from "qrcode-terminal";
 import { formatUserTurn, runAgent, type AgentContext } from "./agent.js";
@@ -213,7 +214,7 @@ export async function startLinkedBot(): Promise<void> {
       if (PAIR_NUMBER && !pairingRequested) {
         pairingRequested = true;
         const code = await sock.requestPairingCode(PAIR_NUMBER);
-        console.log(`\nOn your phone: WhatsApp > Linked devices > Link a device > Link with phone number instead\nEnter this code: ${code}\n`);
+        console.log(`\n[linked] PAIRING CODE: ${code}\nOn your phone: WhatsApp > Linked devices > Link a device > Link with phone number instead, then enter the code.\n`);
       } else if (!PAIR_NUMBER) {
         console.log("\nOn your phone: WhatsApp > Linked devices > Link a device, then scan:\n");
         qrcode.generate(qr, { small: true });
@@ -225,8 +226,15 @@ export async function startLinkedBot(): Promise<void> {
     if (connection === "close") {
       const status = (lastDisconnect?.error as { output?: { statusCode?: number } })?.output?.statusCode;
       if (status === DisconnectReason.loggedOut) {
-        console.error(`[linked] logged out. Delete ${AUTH_DIR} and run again to re-link.`);
-        process.exit(1);
+        if (!PAIR_NUMBER) {
+          console.error(`[linked] logged out. Delete ${AUTH_DIR} and run again to re-link.`);
+          process.exit(1);
+        }
+        // Hosted (e.g. Railway): forget the old login and show a new pairing code.
+        console.error("[linked] logged out. Clearing the saved login; a new pairing code follows.");
+        await rm(AUTH_DIR, { recursive: true, force: true });
+        setTimeout(() => startLinkedBot().catch(console.error), 5000);
+        return;
       }
       console.warn(`[linked] connection closed (${status}); reconnecting in 5s`);
       setTimeout(() => startLinkedBot().catch(console.error), 5000);

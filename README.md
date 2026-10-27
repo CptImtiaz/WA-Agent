@@ -92,6 +92,22 @@ The login is saved in `auth_linked/`; delete that folder to link again.
 - Alerts go to your own "Message yourself" chat (or `ALERT_WHATSAPP_NUMBER`). Send
   `/pause`, `/resume`, `/reset <number>` in that chat.
 
+### Running linked-device mode on Railway (24/7, no PC)
+
+1. At https://railway.com, sign in with GitHub: **New Project → Deploy from GitHub repo → WA-Agent**.
+2. In the service, **Settings → Volumes → Add volume** mounted at `/data` (keeps the WhatsApp login across restarts).
+3. **Variables**:
+   - `GEMINI_API_KEY` (and optionally `GEMINI_MODEL`, `HANDOFF_HOURS`, `HISTORY_LIMIT`)
+   - `LINKED_AUTH_DIR=/data/auth_linked`
+   - `LINK_WITH_CODE=60123456789` (your WhatsApp number, digits only)
+4. Deploy. `railway.json` runs `npm start` and restarts the bot if it stops.
+5. Open **Deployments → View logs**, find `PAIRING CODE: XXXX-XXXX`, and enter it on your phone:
+   WhatsApp → Linked devices → Link a device → **Link with phone number instead**.
+   Codes expire quickly; if it does, use **Restart** in Railway to get a new one.
+
+Run the bot in only one place at a time (stop it on your PC first), or customers get two replies.
+If the phone removes the linked device, the bot clears the saved login and prints a new pairing code.
+
 ## Owner alerts and commands
 
 New enquiries and handoffs are sent to `OWNER_WHATSAPP_NUMBER` with a `wa.me` link to the customer.
