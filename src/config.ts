@@ -7,11 +7,12 @@ function optional(name: string, fallback = ""): string {
 export const config = {
   // Google Gemini (free API key: https://aistudio.google.com/apikey)
   geminiApiKey: optional("GEMINI_API_KEY"),
-  // "gemini-flash-latest" always points at Google's current Flash model,
-  // which is included in the free tier. Set a fixed ID to pin a version.
-  model: optional("GEMINI_MODEL", "gemini-flash-latest"),
-  // Used when the main model is busy or over its free limit. Set to "" to disable.
-  backupModel: process.env.GEMINI_BACKUP_MODEL?.trim() ?? "gemini-flash-lite-latest",
+  // "-latest" aliases always point at Google's current free-tier models.
+  // Flash-Lite answers faster and is busy less often; Flash is the backup.
+  // Set a fixed ID to pin a version.
+  model: optional("GEMINI_MODEL", "gemini-flash-lite-latest"),
+  // Used when the main model is busy or slow. Set to "" to disable.
+  backupModel: process.env.GEMINI_BACKUP_MODEL?.trim() ?? "gemini-flash-latest",
 
   // WhatsApp Cloud API (Meta)
   whatsappToken: optional("WHATSAPP_TOKEN"),

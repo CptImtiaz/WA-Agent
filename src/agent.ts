@@ -165,15 +165,19 @@ export function toContents(history: ChatTurn[]): Content[] {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+/** Give up on a slow attempt and move on, instead of keeping the customer waiting. */
+const ATTEMPT_TIMEOUT_MS = 12_000;
+
 /**
- * Call Gemini, riding out the free tier's frequent "high demand" (503) and
- * per-minute limit (429) errors: retry, then try the backup model. Every model
- * in the chain sees the same contents, so a tool loop can switch mid-turn.
+ * Call Gemini, riding out the free tier's frequent "high demand" (503),
+ * per-minute limit (429) and slow responses: alternate between the main and
+ * backup model. Every model sees the same contents, so a tool loop can switch
+ * mid-turn.
  */
 async function generate(contents: Content[]) {
-  const models = [config.model, config.model, config.backupModel, config.backupModel].filter(Boolean);
+  const models = [config.model, config.backupModel, config.model, config.backupModel].filter(Boolean);
   let lastErr: unknown;
-  for (const [i, model] of models.entries()) {
+  for (const model of models) {
     try {
       return await ai.models.generateContent({
         model,
@@ -182,14 +186,17 @@ async function generate(contents: Content[]) {
           systemInstruction: SYSTEM_PROMPT,
           tools: [{ functionDeclarations: TOOLS }],
           maxOutputTokens: 4000,
+          httpOptions: { timeout: ATTEMPT_TIMEOUT_MS },
         },
       });
     } catch (err) {
       lastErr = err;
-      const retryable = err instanceof ApiError && [429, 500, 503, 504].includes(err.status);
-      if (!retryable) throw err;
-      console.warn(`[agent] ${model} busy (${(err as ApiError).status}), retrying`);
-      await sleep(1000 * (i + 1));
+      // API errors other than overload/limits are real problems; anything else
+      // (timeouts, dropped connections) is worth another try.
+      if (err instanceof ApiError && ![429, 500, 503, 504].includes(err.status)) throw err;
+      const why = err instanceof ApiError ? err.status : "timeout/network";
+      console.warn(`[agent] ${model} busy (${why}), trying next model`);
+      await sleep(500);
     }
   }
   throw lastErr;

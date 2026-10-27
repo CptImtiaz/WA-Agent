@@ -103,9 +103,9 @@ async function send(sock: WASocket, jid: string, text: string) {
 
 /** Show "typing…" for a human-ish time, then send. */
 async function sendLikeHuman(sock: WASocket, jid: string, text: string) {
-  await sleep(rand(1500, 3500));
+  await sleep(rand(800, 1800));
   await sock.sendPresenceUpdate("composing", jid).catch(() => {});
-  await sleep(Math.min(8000, 1500 + text.length * 25));
+  await sleep(Math.min(4000, 1000 + text.length * 12));
   await sock.sendPresenceUpdate("paused", jid).catch(() => {});
   await send(sock, jid, text);
 }
