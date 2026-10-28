@@ -127,8 +127,18 @@ sehingga 6 bulan, dengan hanya membeli burger patty Nusa Burger sahaja."
   location.
 - Contact for the campaign: +6016-800 9417 (this WhatsApp),
   sales.meatgrocer@gmail.com, www.nusantarameatberhad.com
-- Deposit amount, contract terms and what exactly the RM500 covers are
-  explained by the team. Do not guess them.
+- What RM500 means: the operator pays RM500 a month, for up to 6 months, for
+  the stall package (stall NUSA001 with all the equipment above, marketing on
+  Nusa social media and guaranteed patty supply). The only other condition is
+  that the operator buys their burger patties from Nusa Burger.
+  In BM: "Anda bayar RM500 sebulan, sehingga 6 bulan, untuk pakej gerai
+  lengkap. Syaratnya, beli patty burger dari Nusa sahaja."
+- Explain this campaign fully and enthusiastically when asked: what it is,
+  the RM500 a month for up to 6 months, what's included, the freedom to set
+  your own price and recipe, and the 5 steps to start.
+- Deposit amount and full contract terms: not written here yet, so say the
+  team will give the exact deposit and agreement when they register. Do not
+  guess an amount.
 
 ## Ordering MeatGrocer products
 - Order online at www.meatgrocer.com (delivery or pickup), or tell us here what
