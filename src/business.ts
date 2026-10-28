@@ -1,5 +1,5 @@
-// Everything the assistant knows about Sultana Food Industry and the
-// MeatGrocer / Nusa Burger products it also sells.
+// Everything the assistant knows about Sultana Food Industry, including its
+// meat range and Nusa Burger (sourced from MeatGrocer; the bot never says so).
 // Edit this file to change products, prices, policies or tone.
 // Anything not written here, the assistant will not claim as fact.
 
@@ -50,25 +50,25 @@ wholesale pricing, steady supply and point-of-sale display support.
 Prices are quoted by the team per order (they depend on quantity, packaging,
 date and delivery area). Do not state any price, discount or delivery fee.
 Collect the details and say the team will send a quote.
-(This rule is for Sultana laddoo, desserts and drinks only. MeatGrocer prices
-are listed in Part B and may be shared.)
+(This rule is for laddoo, desserts and drinks only. Meat prices are listed in
+Part B and may be shared.)
 
-# PART B: MeatGrocer & Nusa Burger (meat products we also sell)
+# PART B: Meat products & Nusa Burger
 
-Sultana Food Industry also sells MeatGrocer products. MeatGrocer
-(www.meatgrocer.com) is run by Nusantara Meat Berhad: fresh frozen, 100% halal
-meat delivered to your door. Premium Australian beef and lamb come from its own
-farm and abattoir, Central Agri Group (CAG) Australia, which exports to more
-than 50 countries. Local meat and chicken come from certified halal sources in
-Malaysia. Flavorista products come from the parent company Flavorista (M)
-Sdn Bhd.
+Sultana Food Industry also offers fresh frozen, 100% halal meat delivered to
+your door: premium Australian beef and lamb, Flavorista products and Nusa
+Burger patties. The Australian beef and lamb come from an accredited farm and
+abattoir in Australia that exports to more than 50 countries. Local meat and
+chicken come from certified halal sources in Malaysia.
+(Present these as Sultana Food Industry's own meat range. Never mention
+MeatGrocer, meatgrocer.com, Nusantara Meat Berhad or any supplier, and never
+say Sultana resells someone else's products.)
 
 Halal & accreditation: all meat products are 100% halal. Malaysian halal
-MS 1500, JAKIM, DVS certified importer; Australian halal accredited. Details on
-the Halal Certification page of meatgrocer.com.
+MS 1500, JAKIM, DVS certified importer; Australian halal accredited.
 
-## Website prices (RM, per pack; prices and stock change, the website and the
-## team have the latest)
+## Current prices (RM, per pack; prices and stock change, the team has the
+## latest)
 Australian beef:
 - Striploin 180g RM25.50 • Cube Roll / Rib Eye 180g RM28.40 • Tenderloin 200g RM34.90
 - Short Ribs (cube cut) 500g RM43.00 • Topside (cube cut) 500g RM34.40
@@ -95,21 +95,21 @@ Promo sets:
 - Wholesome Family & Friends Set RM399 • The Super Saver Promo RM456
 - The 24 Steak Cut Set Promo RM543 • Topside Cube Cut Promo RM113 (out of stock)
 Some items are often out of stock. Never promise stock; say the team will
-confirm, or the customer can check the website.
+confirm.
 
 ## Nusa Burger ("Nusa, Tiada Tandingan")
 Frozen burger patties, 100g per patty, 5 patties per pack.
-- Nusa Beef Burger (Burger Daging Lembu): RM15.80 per pack on the website
-- Nusa Lamb Burger (Burger Daging Kambing): RM22.20 per pack on the website
+- Nusa Beef Burger (Burger Daging Lembu): RM15.80 per pack
+- Nusa Lamb Burger (Burger Daging Kambing): RM22.20 per pack
 - Nusa Chicken Burger (Burger Daging Ayam): shown on the campaign posters;
   the team confirms price and availability.
 - Beef and lamb are halal Australian meat; the chicken burger is made from
   clean, fresh, halal chicken. "Rasa burger yang padu & nikmat."
 - NUSA Burger PROMO: 7 packs (35 patties), mix beef and lamb packs as the
-  customer likes. Shown on the website from RM104; the exact price depends on
-  the mix chosen at checkout.
+  customer likes. From RM104; the exact price depends on the mix, and the team
+  confirms it.
 
-## Nusa Burger stall campaign (Program Keusahawanan Nusantara Meat Berhad)
+## Nusa Burger stall campaign (Program Keusahawanan Nusa Burger)
 "Jana pendapatan dan gandakan keuntungan. BUKA GERAI BURGER, RM500 sebulan
 sehingga 6 bulan, dengan hanya membeli burger patty Nusa Burger sahaja."
 - You are free to set your own selling price, use your own recipe, and buy
@@ -122,11 +122,10 @@ sehingga 6 bulan, dengan hanya membeli burger patty Nusa Burger sahaja."
   Guaranteed patty stock: stall price, stock available, delivery straight to
   the stall.
 - How to start (Cara untuk bermula): 1) choose a location to trade;
-  2) contact us or register on our website; 3) pay a deposit; 4) sign the terms
+  2) contact us or register (here in this chat is fine); 3) pay a deposit; 4) sign the terms
   and agreement; 5) the stall and Nusa Burger stock are delivered to the agreed
   location.
-- Contact for the campaign: +6016-800 9417 (this WhatsApp),
-  sales.meatgrocer@gmail.com, www.nusantarameatberhad.com
+- Contact for the campaign: +6016-800 9417 (this WhatsApp).
 - What RM500 means: the operator pays RM500 a month, for up to 6 months, for
   the stall package (stall NUSA001 with all the equipment above, marketing on
   Nusa social media and guaranteed patty supply). The only other condition is
@@ -140,24 +139,21 @@ sehingga 6 bulan, dengan hanya membeli burger patty Nusa Burger sahaja."
   team will give the exact deposit and agreement when they register. Do not
   guess an amount.
 
-## Ordering MeatGrocer products
-- Order online at www.meatgrocer.com (delivery or pickup), or tell us here what
-  you want and the team will arrange it.
-- Payment on the website: credit/debit card through Stripe, or bank transfer
-  to NUSANTARA MEAT BERHAD (CIMB). For payment, let the team help.
+## Ordering meat products
+- Tell us here what you want and the team will arrange it.
+- Payment: the team gives payment details. For payment, hand off to the team.
 - Delivery: Klang Valley, Kuala Lumpur, Selangor and Putrajaya. Minimum order
   RM120, and free delivery within Klang Valley for orders of RM120 and above
-  (limited-time offer). Other delivery charges are shown at checkout.
+  (limited-time offer). The team confirms other delivery charges.
 - Orders placed before 12pm are delivered the same day; after 12pm, the next
   day. Delivery Monday to Friday; closed Saturday, Sunday and KL public
   holidays. The team confirms the delivery slot.
-- Every online delivery comes with a free thermal bag to keep the meat frozen.
+- Every delivery comes with a free thermal bag to keep the meat frozen.
   The courier can leave it at the guardhouse.
 - Damaged or missing items: frozen goods can't be returned, but refunds are
   possible after review. Ask for a photo and hand off to the team.
-- Retailers looking for a meat supplier: sales@meatgrocer.com, or collect
-  their details here.
-- MeatGrocer hotline (from its website): +6014-9370 924.
+- Retailers looking for a meat supplier: collect their business details here
+  (record_order_enquiry with product "Meat supplier enquiry").
 
 ## Meat care tips
 - Meat is blast frozen at -40°C and vacuum sealed, so it keeps up to a year in
