@@ -14,9 +14,10 @@ while (true) {
   if (text === "/quit") break;
   const userTurn: ChatTurn = { role: "user", text: formatUserTurn(text, "Test Customer") };
   history.push(userTurn);
-  const { reply } = await runAgent(history, {
+  const { reply, sendCampaignImages } = await runAgent(history, {
     customer: "60000000000",
     customerName: "Test Customer",
+    canSendImages: true,
     async recordEnquiry(d) {
       console.log("\n[owner alert] New enquiry:", d, "\n");
     },
@@ -26,5 +27,6 @@ while (true) {
   });
   history.push({ role: "assistant", text: reply });
   console.log(`\nSultana: ${reply}\n`);
+  if (sendCampaignImages) console.log("[sends the 3 campaign posters]\n");
 }
 rl.close();

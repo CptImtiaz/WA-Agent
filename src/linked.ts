@@ -25,7 +25,7 @@ import {
   type WASocket,
 } from "baileys";
 import { randomBytes } from "node:crypto";
-import { rm } from "node:fs/promises";
+import { readdir, readFile, rm } from "node:fs/promises";
 import { createServer } from "node:http";
 import pino from "pino";
 import QRCode from "qrcode";
@@ -44,6 +44,8 @@ const MAX_REPLIES_PER_MINUTE = Number(process.env.MAX_REPLIES_PER_MINUTE || "15"
 const PORT = process.env.PORT;
 const LINK_PAGE_KEY = process.env.LINK_PAGE_KEY?.trim().replace(/^["']|["']$/g, "") || randomBytes(9).toString("base64url");
 const HOSTED = Boolean(PAIR_NUMBER || PORT);
+// Campaign posters the agent can send (send_campaign_images), in file-name order.
+const CAMPAIGN_DIR = new URL("../assets/campaign/", import.meta.url);
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const rand = (min: number, max: number) => min + Math.random() * (max - min);
@@ -101,6 +103,16 @@ async function send(sock: WASocket, jid: string, text: string) {
   if (sent?.key.id) botSent.add(sent.key.id);
 }
 
+/** Send the campaign posters, one after another. */
+async function sendCampaignImages(sock: WASocket, jid: string) {
+  const files = (await readdir(CAMPAIGN_DIR)).filter((f) => /\.(jpe?g|png)$/i.test(f)).sort();
+  for (const file of files) {
+    await sleep(rand(600, 1200));
+    const sent = await sock.sendMessage(jid, { image: await readFile(new URL(file, CAMPAIGN_DIR)) });
+    if (sent?.key.id) botSent.add(sent.key.id);
+  }
+}
+
 /** Show "typing…" for a human-ish time, then send. */
 async function sendLikeHuman(sock: WASocket, jid: string, text: string) {
   await sleep(rand(800, 1800));
@@ -122,6 +134,7 @@ function agentContext(sock: WASocket, msg: WAMessage, key: string, phone?: strin
   return {
     customer: key,
     customerName: msg.pushName ?? undefined,
+    canSendImages: true,
     async recordEnquiry(d) {
       await store.saveLead({ customer: key, createdAt: new Date().toISOString(), ...d });
       await send(
@@ -194,14 +207,25 @@ async function handle(sock: WASocket, msg: WAMessage) {
 
   await sock.readMessages([msg.key]).catch(() => {});
   const history = [...(await store.getHistory(key)), userTurn];
-  const { reply, ok } = await runAgent(history, agentContext(sock, msg, key, phone));
+  const { reply, ok, sendCampaignImages: withImages } = await runAgent(
+    history,
+    agentContext(sock, msg, key, phone),
+  );
   if (!ok) {
     // Stay silent to the customer; staff see the message in the app anyway.
     await send(sock, alertJid(sock), `⚠️ Bot couldn't answer ${msg.pushName ?? key}: "${text}"`);
     return;
   }
   await sendLikeHuman(sock, jid!, reply);
-  await store.appendHistory(key, [userTurn, { role: "assistant", text: reply }], config.historyLimit);
+  if (withImages) {
+    await sendCampaignImages(sock, jid!).catch((err) => console.error("[linked] sending campaign images failed", err));
+  }
+  const sentNote = withImages ? "\n[Sent the 3 Nusa Burger campaign posters]" : "";
+  await store.appendHistory(
+    key,
+    [userTurn, { role: "assistant", text: reply + sentNote }],
+    config.historyLimit,
+  );
 }
 
 /** What the link page shows. */
